@@ -1,0 +1,63 @@
+MongoDB queries: questions 8-9-10-11
+---------------------------------------
+
+Question 8:
+Give the number of medicines taken with a lozenge (TABLET;BUCCAL, SUBLINGUAL).
+Make sure that your query only shows the name of the drug.
+
+db.getCollection('bioinf_mongo_exam').find({
+    method_of_admission: "TABLET;BUCCAL, SUBLINGUAL"},
+    {drug:1, _id:0})
+
+{
+    "drug" : "DEMULEN 1/35-28"
+}
+
+---------------------------------------
+
+
+Question 9:
+Give the number of medicines that have side effects in more than 8% of cases.
+
+db.getCollection('bioinf_mongo_exam').find({
+    percentage_of_side_effects: {$gt: 8}}).count()
+
+399
+
+---------------------------------------
+
+
+Question 10:
+Give the names of the companies that produce medicines that on average 
+cause side effects in more than 10% of cases? Sort your results according
+to decreasing percentage of side effects.
+
+db.getCollection('bioinf_mongo_exam').aggregate([
+            {$group: {_id: "$company", avg_side_effects: {$avg: "$percentage_of_side_effects"}}},
+            {$match: {avg_side_effects: {$gt: 10}}}, {$sort: {avg_side_effects:1}}])
+
+/* 1 */
+{
+    "_id" : "Durata Therapeutics, Inc.",
+    "avg_side_effects" : 10.5
+}
+
+/* 2 */
+{
+    "_id" : "Watson Pharmaceuticals, Inc.",
+    "avg_side_effects" : 10.65
+}
+
+/* 3 */
+{
+    "_id" : "Galderma Laboratories, L.P.",
+    "avg_side_effects" : 11.5
+}
+
+---------------------------------------
+
+
+Question 11:
+Specify the lower and upper limits of the percentage of side effects of
+medicines within companies that produce more than 1 drug.
+
