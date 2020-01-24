@@ -61,3 +61,7 @@ Question 11:
 Specify the lower and upper limits of the percentage of side effects of
 medicines within companies that produce more than 1 drug.
 
+db.getCollection('bioinf_mongo_exam').aggregate([
+            {$convert: {input: "drug", to: "int"}},
+            {$group: {_id: "$company", amount_drugs: {$sum: "$drug"}}}])
+
