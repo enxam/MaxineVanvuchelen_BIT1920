@@ -1,0 +1,65 @@
+Ensembl REST API queries: questions 12-13
+-------------------------------------------
+
+Question 12:
+Give the mapping location of the variant rs499899635 in the zebrafish.
+
+--> I first went to the rest.ensembl.org website to check which endpoint was
+needed to find this information.
+I found that the endpoint giving the mapping information is the variation one.
+Then I set up the following curl command:
+(I chose for the text/xml option because I find it more readable)
+
+
+$ curl 'https://rest.ensembl.org/variation/danio_rerio/rs499899635?' -H 'Content-type:text/xml'
+
+Which resulted in the following information:
+
+<opt>
+  <data name="rs499899635" MAF="" ambiguity="Y" ancestral_allele="" minor_allele="" most_severe_consequence="intergenic_variant" source="Variants (including SNPs and indels) imported from dbSNP (mapped to GRCz11)" var_class="SNP">
+    <mappings allele_string="T/C" assembly_name="GRCz11" coord_system="chromosome" end="10138412" location="10:10138412-10138412" seq_region_name="10" start="10138412" strand="1" />
+  </data>
+</opt>
+
+---------------------------------------
+
+Question 13:
+Give the first 100 bases of the genomic FASTA sequence of
+the Notch1 gene in the mouse.
+
+--> I went back to the rest.ensembl.org website to check the needed endpoint.
+This time I first chose for the xrefs endpoint in order to get the needed
+Ensembl ID for the Notch1 gene in the mouse.
+For this I used following curl command:
+
+$ curl 'https://rest.ensembl.org/xrefs/symbol/mus_musculus/Notch1?' -H 'Content-type:text/xml'
+
+Which restuled in this information:
+
+<opt>
+  <data id="ENSMUSG00000026923" type="gene" />
+</opt>
+
+With this new information, I chose another endpoint to find the 
+genomic FASTA sequence. For this I chose the sequence endpoint.
+Following curl command was executed in terminal:
+
+curl 'https://rest.ensembl.org/sequence/id/ENSMUSG00000026923?type=genomic' -H 'Content-type:text/x-fasta'
+
+The first line that is returned by this command is the following:
+
+>ENSMUSG00000026923.15 chromosome:GRCm38:2:26457903:26516564:-1
+
+So now the exact position of the Notch1 gene from mouse species is know 
+and also on which chromosome it lies.
+
+Now another endpoint from the REST API can be used to find the first 100 bases.
+The sequence endpoint is used again for finding regions.
+
+$ curl 'https://rest.ensembl.org/sequence/region/mus_musculus/2:26457903..26458002:1?' -H 'Content-type:text/x-fasta'
+
+And finally the first 100 bases of the Notch1 gene from the mouse are returned:
+
+>chromosome:GRCm38:2:26457903:26458002:1
+TTTAGCAAAATGTGGACAACCATCAGTATCATTTTTATTGCAAATTAGTTAACAAAAAAA
+GATGAAAAAAATACATCATTTTCATTACCTACAGTTTTGC
