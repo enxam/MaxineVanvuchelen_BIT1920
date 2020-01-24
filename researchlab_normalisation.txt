@@ -1,0 +1,42 @@
+Question 2: research lab normalisation
+----------------------------------------
+
+UNF
+---
+
+ResearchLab(PersonnelNumber, Name, DateOfBirth, LabCode, LabName, ResearchCode, ResearchDescription, ResearchSupervisor)
+
+--> the unnormalized form contains all the data in one entity
+
+1NF
+---
+
+ResearchLab(PersonnelNumber(PK), Name, DateOfBirth, LabCode(PK), LabName, ResearchCode(PK), ResearchDescription, ResearchSupervisor)
+
+--> the 1NF form contains primary keys (noted here with (PK)). These are 
+PersonnelNumber, LabCode and ResearchCode.
+
+
+2NF
+---
+
+ResearchLab(PersonnelNumber(PK), Name, DateOfBirth, LabCode(FK), ResearchCode(FK))
+  Lab(LabCode(PK), LabName)
+  Research(ResearchCode(PK), ResearchDescription, ResearchSupervisor)
+
+--> two tables are added in the 2NF form, making every attribute of the table dependant
+on the primary key of that table.
+The labname has nothing to do with the personnel number, so this will be
+placed in a separate table together with lab code, on which lab name does
+depend. The same goes for Research description and research supervisor,
+these are also not dependant on personnel number, but on research code.
+
+3NF
+---
+
+ResearchLab(PersonnelNumber(PK), Name, DateOfBirth, LabCode(FK), ResearchCode(FK))
+  Lab(LabCode(PK), LabName)
+  Research(ResearchCode(PK), ResearchDescription, ResearchSupervisor)
+
+For the 3NF form, everything stays the same because every non-prime attribute is
+already non-transitively dependent on every key.
