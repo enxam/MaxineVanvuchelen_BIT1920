@@ -1,0 +1,86 @@
+SQL queries: questions 4-5-6-7
+---------------------------------------
+
+Question 4:
+Give the name and length of the third largest gene in the genome.
+
+mysql> select gene_name, (seq_region_end - seq_region_start +1) length from gene order by length desc limit 1 offset 2;
++-----------+---------+
+| gene_name | length  |
++-----------+---------+
+| PARP1     | 2493040 |
++-----------+---------+
+1 row in set (0.02 sec)
+
+---------------------------------------
+
+Question 5:
+Give the name of the gene with the most exons? Give the number of exons of this gene?
+
+mysql> select gene_name, count(exon_id) exon_amount from gene g join transcript t on g.gene_id=t.gene_id join exon_transcript et on t.transcript_id=et.transcript_id group by gene_name order by exon_amount desc limit 1;
++-----------+-------------+
+| gene_name | exon_amount |
++-----------+-------------+
+| COL11A2   |        3598 |
++-----------+-------------+
+1 row in set (0.97 sec)
+
+---------------------------------------
+
+Question 6:
+Give the name of the chromosome with the most genes associated with breast cancer.
+Give the number of transcripts of this chromosome? (2 queries)
+
+Query 1:
+
+mysql> select chromosome, count(*) amount_genes from gene where description like "%breast cancer%" group by chromosome order by amount_genes desc limit 1;
++------------+--------------+
+| chromosome | amount_genes |
++------------+--------------+
+| 16         |            2 |
++------------+--------------+
+1 row in set (0.03 sec)
+
+
+Query 2:
+
+mysql> select chromosome, count(transcript_id) amount_transcripts from gene g join transcript t on g.gene_id=t.gene_id where chromosome = 16 group by chromosome;
++------------+--------------------+
+| chromosome | amount_transcripts |
++------------+--------------------+
+| 16         |               3636 |
++------------+--------------------+
+1 row in set, 5348 warnings (0.02 sec)
+
+---------------------------------------
+
+Question 7:
+Give the number of rows from the exon table and do the same
+for the exon_transcript table (2 queries). Explain why there
+is a difference in number of rows.
+
+Query 1:
+
+mysql> select count(*) exon_amount_rows from exon;
++------------------+
+| exon_amount_rows |
++------------------+
+|           642590 |
++------------------+
+1 row in set (0.04 sec)
+
+
+Query 2:
+
+mysql> select count(*) exon_transcript_amount_rows from exon_transcript;
++-----------------------------+
+| exon_transcript_amount_rows |
++-----------------------------+
+|                     1178393 |
++-----------------------------+
+1 row in set (0.14 sec)
+
+
+The exon_transcript table contains a lot more rows because one transcript can have multiple exons.
+The exon_transcript table is the cross-reference table between the transcript and exon tables,
+showing the relation between these two tables.
